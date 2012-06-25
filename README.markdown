@@ -1,7 +1,7 @@
 Meteor Models
 =============
 
-This is a basic proof of concept of the way meteor models *could* work. It builds on the code in this (pull request)[https://github.com/meteor/meteor/pull/129].
+This is a basic proof of concept of the way meteor models *could* work. It builds on the code in this [pull request](https://github.com/meteor/meteor/pull/129).
 
 To use, do something like
 
@@ -12,7 +12,7 @@ To use, do something like
   Post.prototype = new Model({});
   Post.prototype.constructor = Post;
 
-  var Posts = new Meteor.Collection('posts', null, null, Post);
+  var Posts = Post._collection = new Meteor.Collection('posts', null, null, Post);
 ```
 
 Then 2 things happen, firstly you can use the Model class to save and update posts:
