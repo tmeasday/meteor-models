@@ -3,13 +3,19 @@ Model = function(attributes) {
   this.id = attributes._id;
   
   if (this.id)
-    delete attributes._id;
+    // delete attributes._id;
   
   // begin with no errors
   this.errors = {};
 }
 
 Model.prototype = {
+  _meteorRawData: function() {
+    var data = this.attributes;
+    // data._id = this.id;
+    return data;
+  },
+  
   persisted: function() {
     return ('id' in this && this.id != null);
   },
