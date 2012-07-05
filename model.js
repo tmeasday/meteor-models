@@ -3,7 +3,7 @@ Model = function(attributes) {
   this.id = attributes._id;
   
   if (this.id)
-    // delete attributes._id;
+    delete attributes._id;
   
   // begin with no errors
   this.errors = {};
@@ -12,7 +12,7 @@ Model = function(attributes) {
 Model.prototype = {
   _meteorRawData: function() {
     var data = this.attributes;
-    // data._id = this.id;
+    data._id = this.id;
     return data;
   },
   
