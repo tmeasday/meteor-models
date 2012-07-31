@@ -1,0 +1,8 @@
+{
+  "name": "models",
+  "description": "Add model support to meteor's collections",
+  "homepage": "https://github.com/tmeasday/meteor-models",
+  "author": "Tom Coleman <tom@thesnail.org>",
+  "version": "0.1.0",
+  "git": "https://github.com/tmeasday/meteor-models.git"
+}
