@@ -20,9 +20,13 @@ Model.prototype = {
     return ('id' in this && this.id != null);
   },
   
-  save: function() {
+  save: function(update) {
+    
     if (this.persisted()) {
-      this.constructor._collection.update(this.id, this.attributes);
+      if (_.isUndefined(update))
+        update = {$set: this.attributes};
+      
+      this.constructor._collection.update(this.id, update);
     } else {
       this.id = this.constructor._collection.insert(this.attributes);
     }
