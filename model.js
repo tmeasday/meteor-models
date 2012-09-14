@@ -1,9 +1,9 @@
 Model = function(attributes) {
-  this.attributes = attributes;
-  this.id = attributes._id;
+  this.attributes = attributes || {};
+  this.id = this.attributes._id;
   
   if (this.id)
-    delete attributes._id;
+    delete this.attributes._id;
   
   // begin with no errors
   this.errors = {};
@@ -11,7 +11,7 @@ Model = function(attributes) {
 
 Model.prototype = {
   _meteorRawData: function() {
-    var data = this.attributes;
+    var data = _.extend({}, this.attributes);
     data._id = this.id;
     return data;
   },
