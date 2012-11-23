@@ -30,4 +30,4 @@ And when you query the collection, you will get posts out:
   post.update_attribute('title', 'a new title');
 ```
 
-For some ideas on how this could be expanded in the future, see the [model class](https://github.com/tmeasday/league/blob/master/models/_model.coffee) from the League project.
+For some ideas on how this could be expanded in the future, see the [model class](https://github.com/percolatestudio/league/blob/master/models/_model.coffee) from the League project.
