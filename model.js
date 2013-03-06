@@ -17,7 +17,7 @@ Model.prototype = {
   },
   
   $update: function(modifier) {
-    this._collection.update(this._id, modifier);
+    this.$collection.update(this._id, modifier);
   },
   
   $save: function() {
@@ -30,36 +30,17 @@ Model.prototype = {
     if (this.$persisted()) {
       this.$update({$set: attributes})
     } else {
-      this._id = this._collection.insert(attributes);
+      this._id = this.$collection.insert(attributes);
     }
     
     return this;
   },
   
-  
-  // persisted: function() {
-  //   return ('_id' in this.attributes && this.attributes._id !== null);
-  // },
-  // 
-  // 
-  // update_attributes: function(attrs) {
-  //   for (key in attrs) {
-  //     this.attributes[key] = attrs[key];
-  //   }
-  //   return this.save();
-  // },
-  // 
-  // update_attribute: function(key, value) {
-  //   var attrs = {};
-  //   attrs[key] = value;
-  //   return this.update_attributes(attrs);
-  // },
-  // 
-  // destroy: function() {
-  //   if (this.persisted()) {
-  //     this.constructor._collection.remove(this.id);
-  //   }
-  // }
+  $destroy: function() {
+    if (this.$persisted()) {
+      this.$collection.remove(this._id);
+    }
+  }
 }
 
 Model.extend = function(properties) {
