@@ -1,8 +1,8 @@
 Model = function(attributes) {
   _.extend(this, attributes);
   
-  // begin with no errors
-  this._errors = {};
+  // // begin with no errors
+  // this._errors = {};
 }
 
 Model.prototype = {
@@ -12,23 +12,35 @@ Model.prototype = {
     return this;
   },
   
+  $persisted: function() {
+    return ('_id' in this && this._id !== null);
+  },
+  
+  $update: function(modifier) {
+    this._collection.update(this._id, modifier);
+  },
+  
+  $save: function() {
+    var attributes = {};
+    _.each(this, function(value, key) {
+      // XXX: filter out errors if we need them
+      attributes[key] = value;
+    });
+    
+    if (this.$persisted()) {
+      this.$update({$set: attributes})
+    } else {
+      this._id = this._collection.insert(attributes);
+    }
+    
+    return this;
+  },
+  
+  
   // persisted: function() {
   //   return ('_id' in this.attributes && this.attributes._id !== null);
   // },
   // 
-  // save: function(update) {
-  //   
-  //   if (this.persisted()) {
-  //     if (_.isUndefined(update))
-  //       update = {$set: this.attributes};
-  //     
-  //     this.constructor._collection.update(this.id, update);
-  //   } else {
-  //     this.id = this.constructor._collection.insert(this.attributes);
-  //   }
-  //   
-  //   return this;
-  // },
   // 
   // update_attributes: function(attrs) {
   //   for (key in attrs) {
