@@ -1,58 +1,53 @@
 Model = function(attributes) {
-  this.attributes = attributes || {};
-  
-  // put _id on the main object as well as things like {{#each}} expect it to 
-  // be there. Also Meteor internals sometime set this without passing it into
-  // the constructor. So never assume it's in attributes.
-  this._id = this.attributes._id;
-  delete this.attributes._id;
+  _.extend(this, attributes);
   
   // begin with no errors
-  this.errors = {};
+  this._errors = {};
 }
 
 Model.prototype = {
+  // XXX: this will shadow a member property called clone. Do we need this?
   clone: function() {
     // XXX: todo
     return this;
   },
   
-  persisted: function() {
-    return ('_id' in this.attributes && this.attributes._id !== null);
-  },
-  
-  save: function(update) {
-    
-    if (this.persisted()) {
-      if (_.isUndefined(update))
-        update = {$set: this.attributes};
-      
-      this.constructor._collection.update(this.id, update);
-    } else {
-      this.id = this.constructor._collection.insert(this.attributes);
-    }
-    
-    return this;
-  },
-  
-  update_attributes: function(attrs) {
-    for (key in attrs) {
-      this.attributes[key] = attrs[key];
-    }
-    return this.save();
-  },
-  
-  update_attribute: function(key, value) {
-    var attrs = {};
-    attrs[key] = value;
-    return this.update_attributes(attrs);
-  },
-  
-  destroy: function() {
-    if (this.persisted()) {
-      this.constructor._collection.remove(this.id);
-    }
-  }
+  // persisted: function() {
+  //   return ('_id' in this.attributes && this.attributes._id !== null);
+  // },
+  // 
+  // save: function(update) {
+  //   
+  //   if (this.persisted()) {
+  //     if (_.isUndefined(update))
+  //       update = {$set: this.attributes};
+  //     
+  //     this.constructor._collection.update(this.id, update);
+  //   } else {
+  //     this.id = this.constructor._collection.insert(this.attributes);
+  //   }
+  //   
+  //   return this;
+  // },
+  // 
+  // update_attributes: function(attrs) {
+  //   for (key in attrs) {
+  //     this.attributes[key] = attrs[key];
+  //   }
+  //   return this.save();
+  // },
+  // 
+  // update_attribute: function(key, value) {
+  //   var attrs = {};
+  //   attrs[key] = value;
+  //   return this.update_attributes(attrs);
+  // },
+  // 
+  // destroy: function() {
+  //   if (this.persisted()) {
+  //     this.constructor._collection.remove(this.id);
+  //   }
+  // }
 }
 
 Model.extend = function(properties) {
