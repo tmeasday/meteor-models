@@ -21,19 +21,28 @@ Model.prototype = {
   },
   
   $save: function() {
+    var self = this;
+    
+    // XXX: validations?
+    
+    // XXX: cancel if a before save returns false?
+    _.each(self.constructor._beforeSaveCallbacks, function(cb) {
+      return cb(self);
+    });
+    
     var attributes = {};
-    _.each(this, function(value, key) {
-      // XXX: filter out errors if we need them
+    _.each(self, function(value, key) {
+      // XXX: filter out errors when we add them
       attributes[key] = value;
     });
     
-    if (this.$persisted()) {
-      this.$update({$set: attributes})
+    if (self.$persisted()) {
+      self.$update({$set: attributes})
     } else {
-      this._id = this.$collection.insert(attributes);
+      self._id = self.$collection.insert(attributes);
     }
     
-    return this;
+    return self;
   },
   
   $destroy: function() {
@@ -43,6 +52,11 @@ Model.prototype = {
   }
 }
 
+// XXX: I'm pretty certain there are better ways to do this.
+// but it does what I need it to, for now.
+//
+// problems: 1. can't extend sub-"classes" of Model
+// 2. can't call super
 Model.extend = function(properties) {
   // special named method 'initialize'
   var init = function() {};
@@ -55,10 +69,28 @@ Model.extend = function(properties) {
     Model.call(this, attrs);
     init();
   }
-    
+  
+  // 'copy' over instance methods
   ctor.prototype = new Model();
   _.extend(ctor.prototype, properties);
   ctor.prototype.constructor = ctor;
-    
+  
+  // really copy over class methods / attributes
+  for (var key in Model) {
+    var value = Model[key];
+    if (_.isFunction(value)) {
+      ctor[key] = value;
+    } else {
+      ctor[key] = _.clone(value);
+    }
+  }
+  
   return ctor;
+}
+
+// no-one should ever call before save on the model, but they could;
+Model._beforeSaveCallbacks = [];
+Model.beforeSave = function(callback) {
+  if (_.isFunction(callback))
+    this._beforeSaveCallbacks.push(callback);
 }
