@@ -85,6 +85,11 @@ Model.extend = function(properties) {
     }
   }
   
+  // a function to use for Collection::transform
+  ctor.transform = function(attrs) {
+    return new ctor(attrs);
+  }
+  
   return ctor;
 }
 
