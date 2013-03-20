@@ -67,7 +67,7 @@ Model.extend = function(properties) {
     
   var ctor = function(attrs) {
     Model.call(this, attrs);
-    init();
+    init.call(this, attrs);
   }
   
   // 'copy' over instance methods
