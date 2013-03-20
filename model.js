@@ -32,7 +32,7 @@ Model.prototype = {
     
     var attributes = {};
     _.each(self, function(value, key) {
-      // XXX: filter out errors when we add them
+      if (key[0] === '$') return;
       attributes[key] = value;
     });
     
@@ -54,15 +54,19 @@ Model.prototype = {
   // use this to store a "un-saved" but reactive version of this
   // document in this client
   $storeAs: function(name) {
+    this.$storedName = name;
     Session.set(name, this);
-    //   ctor: this.constructor,
-    //   data: this
-    // });
+  },
+  
+  $unstore: function(name) {
+    if (this.$storedName)
+      Session.set(this.$storedName, null);
   }
 }
 
 Model.$getStored = function(name) {
-  return new this(Session.get(name));
+  var data = Session.get(name);
+  return data && new this(data);
 }
 
 // XXX: I'm pretty certain there are better ways to do this.
