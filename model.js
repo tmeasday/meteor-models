@@ -49,7 +49,20 @@ Model.prototype = {
     if (this.$persisted()) {
       this.$collection.remove(this._id);
     }
+  },
+  
+  // use this to store a "un-saved" but reactive version of this
+  // document in this client
+  $storeAs: function(name) {
+    Session.set(name, this);
+    //   ctor: this.constructor,
+    //   data: this
+    // });
   }
+}
+
+Model.$getStored = function(name) {
+  return new this(Session.get(name));
 }
 
 // XXX: I'm pretty certain there are better ways to do this.
