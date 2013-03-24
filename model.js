@@ -69,6 +69,28 @@ Model.$getStored = function(name) {
   return data && new this(data);
 }
 
+Model.$addMethod = function(name, fn) {
+  var self = this;
+  var methodName = self.prototype.$collection._name + '/' + name;
+  
+  var methodDefs = {};
+  methodDefs[methodName] = function(id /*, args */) {
+    var record = self.prototype.$collection.findOne(id);
+    var args = Array.prototype.slice.call(arguments, 1);
+    args.unshift(record);
+    fn.apply(this, args);
+  };
+  
+  Meteor.methods(methodDefs);
+  
+  this.prototype[name] = function() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(this._id);
+    args.unshift(methodName);
+    return Meteor.call.apply(Meteor, args);
+  }
+}
+
 // XXX: I'm pretty certain there are better ways to do this.
 // but it does what I need it to, for now.
 //
