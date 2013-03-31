@@ -78,7 +78,7 @@ Model.$addMethod = function(name, fn) {
     var record = self.prototype.$collection.findOne(id);
     var args = Array.prototype.slice.call(arguments, 1);
     args.unshift(record);
-    fn.apply(this, args);
+    return fn.apply(this, args);
   };
   
   Meteor.methods(methodDefs);
