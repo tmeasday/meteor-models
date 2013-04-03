@@ -32,7 +32,7 @@ Model.prototype = {
     
     var attributes = {};
     _.each(self, function(value, key) {
-      if (key[0] === '$') return;
+      if (key[0] === '$' || key == '_id') return;
       attributes[key] = value;
     });
     
