@@ -42,6 +42,10 @@ Model.prototype = {
       self._id = self.$collection.insert(attributes);
     }
     
+    _.each(self.constructor._afterSaveCallbacks, function(cb) {
+      return cb(self);
+    });
+    
     return self;
   },
   
@@ -132,9 +136,16 @@ Model.extend = function(properties) {
   return ctor;
 }
 
+// XXX: generalise this stuff?
 // no-one should ever call before save on the model, but they could;
 Model._beforeSaveCallbacks = [];
 Model.beforeSave = function(callback) {
   if (_.isFunction(callback))
     this._beforeSaveCallbacks.push(callback);
+}
+
+Model._afterSaveCallbacks = [];
+Model.afterSave = function(callback) {
+  if (_.isFunction(callback))
+    this._afterSaveCallbacks.push(callback);
 }
