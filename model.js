@@ -23,9 +23,17 @@ Model.prototype = {
   $save: function() {
     var self = this;
     
+    // XXX: what if the id is set? -- answer: we are stuffed.
+    var creating = _.isUndefined(this._id)
+    
     // XXX: validations?
     
     // XXX: cancel if a before save returns false?
+    if (creating) {
+      _.each(self.constructor._beforeCreateCallbacks, function(cb) {
+        return cb(self);
+      });
+    }
     _.each(self.constructor._beforeSaveCallbacks, function(cb) {
       return cb(self);
     });
@@ -42,6 +50,11 @@ Model.prototype = {
       self._id = self.$collection.insert(attributes);
     }
     
+    if (creating) {
+      _.each(self.constructor._afterCreateCallbacks, function(cb) {
+        return cb(self);
+      });
+    }
     _.each(self.constructor._afterSaveCallbacks, function(cb) {
       return cb(self);
     });
@@ -144,8 +157,20 @@ Model.beforeSave = function(callback) {
     this._beforeSaveCallbacks.push(callback);
 }
 
+Model._beforeCreateCallbacks = [];
+Model.beforeCreate = function(callback) {
+  if (_.isFunction(callback))
+    this._beforeCreateCallbacks.push(callback);
+}
+
 Model._afterSaveCallbacks = [];
 Model.afterSave = function(callback) {
   if (_.isFunction(callback))
     this._afterSaveCallbacks.push(callback);
+}
+
+Model._afterCreateCallbacks = [];
+Model.afterCreate = function(callback) {
+  if (_.isFunction(callback))
+    this._afterCreateCallbacks.push(callback);
 }
