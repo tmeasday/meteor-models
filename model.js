@@ -20,7 +20,9 @@ Model.prototype = {
     this.$collection.update(this._id, modifier);
   },
   
-  $save: function() {
+  // pass in an id to save with a specific id
+  // XXX: probably better just to set an attribute when pulled out of a collection
+  $save: function(id) {
     var self = this;
     
     // XXX: what if the id is set? -- answer: we are stuffed.
@@ -47,6 +49,9 @@ Model.prototype = {
     if (self.$persisted()) {
       self.$update({$set: attributes})
     } else {
+      if (id)
+        attributes = _.extend(attributes, {_id: id});
+      
       self._id = self.$collection.insert(attributes);
     }
     
