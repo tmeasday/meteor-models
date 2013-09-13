@@ -6,6 +6,9 @@ Package.on_use(function (api, where) {
   where = where || ['client', 'server'];
   
   api.add_files(['model.js'], where);
+  
+  if (typeof api.export !== 'undefined')
+    api.export('Model', where);
 });
 
 Package.on_test(function (api) {
