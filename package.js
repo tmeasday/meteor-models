@@ -3,6 +3,7 @@ Package.describe({
 });
 
 Package.on_use(function (api, where) {
+  api.use('underscore');
   where = where || ['client', 'server'];
   
   api.add_files(['model.js'], where);
